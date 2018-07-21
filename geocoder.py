@@ -1,27 +1,32 @@
-import pandas as pd #python data science toolkit: data manipulation and database maneging
-import numpy as np #mathematic function
-import requests #api
-import re #regex sytax
+import pandas as pd
+import numpy as np
+import requests
+import json
 
 '''
-Author: Tian Xie 
-Purpose: This program will geocode address in downtown detroit to specific x,y coordinates 
+Author: Tian Xie
+Purpose: This program will geocode address in downtown detroit to specific x,y coordinates
 
-Input: table with address column(s)
-ADDITIONAL FIELDS: 
+Input: an excel table with address column(s)
+ADDITIONAL FIELDS:
 1. x,y: longitude and latitude OF the GEOCODing result(came from Google API)
-2. flag: indicate whether the geocoder match exact address of the input 
+2. flag: indicate whether the geocoder match exact address of the input
 
-System Requirements: 
+System Requirements:
 1. Need pandas and numpy libraries
 '''
 
 # MAIN PARAMETERS
-data_file = 'data/Washtenaw+County+Ride+Sharing+Research+Survey_June+26%2C+2018_14.17.csv'  # PUT THE DATA FILE HERE
-county = 'Wayne County'
-state = 'Michigan'
-viewbox = '-83.1428,42.3224,-83.0073,42.4068'
-bound = '-83.1428,42.3224,-83.0073,42.4068'
+with open('config.json') as json_data_file:
+    data = json.load(json_data_file)
+input_table = str(data['input_table'])
+reference_path = str(data['reference_path'])
+googleApiKey = str(data['googleApiKey'])
+county = str(data['county'])
+state = str(data['state'])
+viewbox = str(data['viewbox'])
+bound = str(data['bound'])
+ref_data = pd.read_excel(reference_path) #load reference data
 
 
 def OSM_geocode(address):
@@ -47,8 +52,8 @@ def OSM_geocode(address):
 
 
 def google_geocode(intersect):
-    global bound, county
-    GoogleApiKey = 'AIzaSyA_AwST7YZY19TyJOp9L6VXJzBimg4LgVw'  # enter your api key
+    global bound, county, googleApiKey
+    GoogleApiKey = googleApiKey
     params = {'address': intersect + ', ' + county,
               'bounds': bound,
               'key': GoogleApiKey}
@@ -97,7 +102,7 @@ def match_ref(string, df):
         matched_record = matched_record[(ref_data['ParsedPreDir'] == parsed_dir_r)];
     else:
         pass
-    return matched_record;
+    return matched_record
 
 
 def google_match_ref(string, x, y, df):
@@ -122,7 +127,7 @@ def google_match_ref(string, x, y, df):
     matched_record['flag'] = flag
     matched_record['x'] = x
     matched_record['y'] = y
-    return matched_record;
+    return matched_record
 
 
 def geocode(address_input):
@@ -161,4 +166,15 @@ def geocode(address_input):
                 print('    Google Address cant be found.', )
     return output_df.reset_index()
 
-ref_data = pd.read_excel('Documents/DDP/data/3930806-RS.xlsx') #load reference data
+def main():
+    #read input excel table
+    global input_table
+    input = pd.read_excel(input_table);
+    input_list = list(input.values.reshape((1,-1))[0])
+    output = geocode(input_list)
+    output['input_address'] = input_list
+    output.to_excel(input_table, sheet_name="geocoding_output")
+    return
+
+if __name__ == '__main__':
+    main()
