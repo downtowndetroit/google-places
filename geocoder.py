@@ -20,6 +20,7 @@ System Requirements:
 with open('config.json') as json_data_file:
     data = json.load(json_data_file)
 input_table = str(data['input_table'])
+output_table = str(data['output_table'])
 reference_path = str(data['reference_path'])
 googleApiKey = str(data['googleApiKey'])
 county = str(data['county'])
@@ -134,46 +135,30 @@ def geocode(address_input):
     global ref_data
     output_df = ref_data[ref_data['Address'] == False]
     for i, address in enumerate(address_input):
-        # disable OSM geocoder
-        if None:  # list(address)[0].isdigit():
-            print('Geocoding <{}>...'.format(address))
-            OSM_output = OSM_geocode(address)
-            selected_record = match_ref(OSM_output, ref_data)
-            if selected_record.shape[0] > 0:
-                selected_record = selected_record.iloc[0]
-                output_df = output_df.append(selected_record)
-                print('    Complete.')
-            else:
-                print('    OSM Address cant be found.')
-                print('    Trying Google API... ')
-                google_output = google_geocode(address)
-                selected_record = google_match_ref(google_output, ref_data)
-                if selected_record.shape[0] > 0:
-                    selected_record = selected_record.iloc[0]
-                    output_df = output_df.append(selected_record)
-                    print('    Complete.')
-                else:
-                    print('    Google Address cant be found.')
+        print('Geocoding <{}>...'.format(address))
+        google_output, x, y = google_geocode(address)
+        selected_record = google_match_ref(google_output, x, y, ref_data)
+        if selected_record.shape[0] > 0:
+            selected_record = selected_record.iloc[0]
+            output_df = output_df.append(selected_record)
+            print('    Complete.')
         else:
-            print('Geocoding <{}>...'.format(address))
-            google_output, x, y = google_geocode(address)
-            selected_record = google_match_ref(google_output, x, y, ref_data)
-            if selected_record.shape[0] > 0:
-                selected_record = selected_record.iloc[0]
-                output_df = output_df.append(selected_record)
-                print('    Complete.')
-            else:
-                print('    Google Address cant be found.', )
+            print('    Google Address cant be found.', )
+            empty_output = ref_data.iloc[0].copy()
+            empty_output['flag'] = 'Google Address cant be found'
+            empty_output['x'] = np.nan
+            empty_output['y'] = np.nan
+            output_df = output_df.append(empty_output)
     return output_df.reset_index()
 
 def main():
     #read input excel table
-    global input_table
-    input = pd.read_excel(input_table);
-    input_list = list(input.values.reshape((1,-1))[0])
+    global input_table, output_table
+    input = pd.read_excel(input_table)
+    input_list = input.values.reshape((1, -1))[0]
     output = geocode(input_list)
-    output['input_address'] = input_list
-    output.to_excel(input_table, sheet_name="geocoding_output")
+    output['input_address'] = pd.Series(input_list)
+    output.to_excel(output_table, sheet_name="geocoding_output")
     return
 
 if __name__ == '__main__':
