@@ -8,8 +8,7 @@
 <p> <h2><b> Prerequisite </b></h2></p>
 
 <ol>
-	<li>edit <code>config.json</code> (with any sublime text editor)
-
+<li>edit <code>config.json</code> (with any sublime text editor)
 		<ul>
 			<li>put absolute path of the input excel table after <code>input_table</code> key in <code>config.json</code> file.</li>
 			<li>put absolute path of the reference path after <code>reference_path</code> key in <code>config.json</code> file.</li>
