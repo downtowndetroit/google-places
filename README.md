@@ -28,9 +28,9 @@ This application run in the command line. Open terminal</p>
 </code></pre>
 
 <h2><b> RESULT </b></h2>
-output:
-![result]
-(https://github.com/tianxie1995/DDP-projects/blob/master/ddpresult.png?raw=true) 
 <p>
 Matching reference table appended with Geocoding x, y and potential FLAG</p>
-> FLAG appear when the address isn't accurately matching the reference table or GOOGLE API indicate that it doesn't exist. 
+> FLAG appear when the address isn't accurately matching the reference table or GOOGLE API indicate that it doesn't exist.
+
+![img]
+(https://github.com/tianxie1995/DDP-projects/blob/master/ddpresult.png?raw=true) 
