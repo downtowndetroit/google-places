@@ -27,10 +27,12 @@ This application run in the command line. Open terminal</p>
 <pre><code>$ python geocoder.py
 </code></pre>
 
-<h2><b> RESULT </b></h2>
-<p>
-Matching reference table appended with Geocoding x, y and potential FLAG</p>
-> FLAG appear when the address isn't accurately matching the reference table or GOOGLE API indicate that it doesn't exist.
-
-![img]
+result:
 (https://github.com/tianxie1995/DDP-projects/blob/master/ddpresult.png?raw=true) 
+
+<h2><b> RESULT </b></h2>
+
+<p>Matching reference table appended with Geocoding x, y and potential FLAG</p>
+
+ > FLAG appear when the address isn't accurately matching the reference table or GOOGLE API indicate that it doesn't exist.
+
