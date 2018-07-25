@@ -1,5 +1,5 @@
 
-<h1>downtown Detroit Geocoder</h1>
+<h1>Downtown Detroit Geocoder</h1>
 
 <p><b> Purpose of this geocoder </b></p>
 
