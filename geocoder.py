@@ -23,11 +23,12 @@ input_table = str(data['input_table'])
 output_table = str(data['output_table'])
 reference_path = str(data['reference_path'])
 googleApiKey = str(data['googleApiKey'])
+city = str(data['city'])
 county = str(data['county'])
 state = str(data['state'])
 viewbox = str(data['viewbox'])
 bound = str(data['bound'])
-ref_data = pd.read_excel(reference_path) #load reference data
+ref_data = pd.read_excel(reference_path)  # load reference data
 
 
 def OSM_geocode(address):
@@ -53,9 +54,9 @@ def OSM_geocode(address):
 
 
 def google_geocode(intersect):
-    global bound, county, googleApiKey
+    global bound, city, county, state, googleApiKey
     GoogleApiKey = googleApiKey
-    params = {'address': intersect + ', ' + county,
+    params = {'address': '{},{},{}'.format(intersect, city, state),
               'bounds': bound,
               'key': GoogleApiKey}
     url = 'https://maps.googleapis.com/maps/api/geocode/json'
@@ -67,7 +68,9 @@ def google_geocode(intersect):
         x = response['results'][0]['geometry']['location']['lng']
         y = response['results'][0]['geometry']['location']['lat']
     except:
-        display_name, x, y = False
+        display_name = False
+        x = False
+        y = False
     return display_name, x, y
 
 
@@ -77,30 +80,32 @@ def match_ref(string, df):
     first_word = string.strip().split(',')[0]
     second_word = string.strip().split(',')[1]
     if list(first_word)[0].isdigit() and list(first_word)[-1].isdigit():
-        parsed_range_r = first_word;
-        parsed_name_r = ' '.join(second_word.strip().split(' ')[:-1]);
+        parsed_range_r = first_word
+        parsed_name_r = ' '.join(second_word.strip().split(' ')[:-1])
         reg_name = '^({}).*$'.format(parsed_name_r)
         if first_word.strip().split(' ')[0] in prefix:
-            parsed_dir_r = first_word.strip().split(' ')[0];
+            parsed_dir_r = first_word.strip().split(' ')[0]
         else:
             parsed_dir_r = False
     else:
         parsed_range_r = False
-        parsed_name_r = ' '.join(first_word.strip().split(' ')[:-1]);
-        reg_name = '^.*\s({}).*$'.format(parsed_name_r);
+        parsed_name_r = ' '.join(first_word.strip().split(' ')[:-1])
+        reg_name = '^.*\s({}).*$'.format(parsed_name_r)
         if second_word.strip().split(' ')[0] in prefix:
-            parsed_dir_r = second_word.strip().split(' ')[0];
+            parsed_dir_r = second_word.strip().split(' ')[0]
         else:
             parsed_dir_r = False
 
     reg_name = '^.*\s({}).*$'.format(parsed_name_r)
     if parsed_range_r:
-        matched_record = ref_data[(ref_data['ParsedRange'] == parsed_range_r)];
-        matched_record = matched_record[matched_record['Address'].str.contains(reg_name)];
+        matched_record = ref_data[(ref_data['ParsedRange'] == parsed_range_r)]
+        matched_record = matched_record[matched_record['Address'].str.contains(
+            reg_name)]
     else:
-        matched_record = ref_data[ref_data['Address'].str.contains(reg_name)];
+        matched_record = ref_data[ref_data['Address'].str.contains(reg_name)]
     if parsed_dir_r:
-        matched_record = matched_record[(ref_data['ParsedPreDir'] == parsed_dir_r)];
+        matched_record = matched_record[(
+            ref_data['ParsedPreDir'] == parsed_dir_r)]
     else:
         pass
     return matched_record
@@ -117,14 +122,14 @@ def google_match_ref(string, x, y, df):
         reg_name = '^({}).*$'.format(parsed_address)
     else:
         if list(second_word.strip().split(' ')[0])[0].isdigit() and list(second_word.strip().split(' ')[0])[
-            -1].isdigit():
+                -1].isdigit():
             parsed_address = ' '.join(second_word.strip().split(' ')[:-1])
             reg_name = '^({}).*$'.format(parsed_address)
         else:
             flag = 'Do not match exact address.'
             parsed_address = ' '.join(second_word.strip().split(' ')[:-1])
             reg_name = '^.*({}).*$'.format(parsed_address)
-    matched_record = ref_data[ref_data['Address'].str.contains(reg_name)];
+    matched_record = ref_data[ref_data['Address'].str.contains(reg_name)]
     matched_record['flag'] = flag
     matched_record['x'] = x
     matched_record['y'] = y
@@ -137,22 +142,31 @@ def geocode(address_input):
     for i, address in enumerate(address_input):
         print('Geocoding <{}>...'.format(address))
         google_output, x, y = google_geocode(address)
-        selected_record = google_match_ref(google_output, x, y, ref_data)
-        if selected_record.shape[0] > 0:
-            selected_record = selected_record.iloc[0]
-            output_df = output_df.append(selected_record)
-            print('    Complete.')
+        if google_output:
+            selected_record = google_match_ref(google_output, x, y, ref_data)
+            if selected_record.shape[0] > 0:
+                selected_record = selected_record.iloc[0]
+                output_df = output_df.append(selected_record)
+                print('    Complete.')
+            else:
+                print('    No matching record found in the reference database.', )
+                empty_output = ref_data.iloc[0].copy()
+                empty_output['flag'] = 'No matching record found in the reference database.'
+                empty_output['x'] = x
+                empty_output['y'] = y
+                output_df = output_df.append(empty_output)
         else:
-            print('    Google Address cant be found.', )
+            print('    Google GeoCoding Error: Address can\'t be found.', )
             empty_output = ref_data.iloc[0].copy()
-            empty_output['flag'] = 'Google Address cant be found'
+            empty_output['flag'] = 'Google Address can\'t be found'
             empty_output['x'] = np.nan
             empty_output['y'] = np.nan
             output_df = output_df.append(empty_output)
     return output_df.reset_index()
 
+
 def main():
-    #read input excel table
+    # read input excel table
     global input_table, output_table
     input = pd.read_excel(input_table)
     input_list = input.values.reshape((1, -1))[0]
@@ -160,6 +174,7 @@ def main():
     output['input_address'] = pd.Series(input_list)
     output.to_excel(output_table, sheet_name="geocoding_output")
     return
+
 
 if __name__ == '__main__':
     main()
