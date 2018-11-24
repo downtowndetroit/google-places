@@ -22,6 +22,11 @@
 	<li>the system should have updated version of python3 with <code>pandas</code>, <code>numpy</code> libraries.</li>
 </ol>
 
+**Install Required Packages**
+Within Anaconda Environment, intall <code>pandas</code>, <code>numpy</code> using:
+<pre><code>conda install pandas numpy
+</code></pre>
+
 ### config.json Template
 <pre><code>{
              "input_table": "YOUR INPUT EXCEL FILE PATH",
