@@ -50,12 +50,15 @@ This application run in the command line. Open terminal
 </code></pre>
 
 <h2><b> RESULT </b></h2>
+
 ### Output fields:
+
 1. All data in reference Dataset about the input address
 2. FLAG: indicate whether or not the output is Geocoded correctly, if
 it's not, FLAG will show the reason why it's not accurate 
 3. input address 
 <br/>
+
 **Sample Result:**
 
 ![pic](https://github.com/tianxie1995/DDP-projects/blob/master/ddpresult.png?raw=true) 

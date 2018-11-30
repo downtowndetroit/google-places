@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 import requests
 import json
 
@@ -13,7 +12,7 @@ ADDITIONAL FIELDS:
 2. flag: indicate whether the geocoder match exact address of the input
 
 System Requirements:
-1. Need pandas and numpy libraries
+1. Need pandas libraries
 '''
 
 # MAIN PARAMETERS
