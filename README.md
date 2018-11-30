@@ -23,8 +23,8 @@
 </ol>
 
 **Install Required Packages**
-Within Anaconda Environment, intall <code>pandas</code>, <code>numpy</code> using:
-<pre><code>conda install pandas numpy
+Within Anaconda Environment, intall <code>pandas</code> using:
+<pre><code>conda install pandas
 </code></pre>
 
 ### config.json Template
@@ -48,6 +48,29 @@ This application run in the command line. Open terminal
 </code></pre>
 <pre><code>$ python geocoder.py
 </code></pre>
+
+### Input excel file format
+
+The input excel file should be formated as one column of address with header
+(i.e.)
+
+<table>
+	<tr>
+		<th> address</th>	
+	</tr
+	<tr> 
+		<td>1 Woodward Ave</td>
+	</tr>
+	<tr> 
+		<td>1412 Woodward Ave</td>
+	</tr>
+	<tr> 
+		<td>1232 Woodward Ave</td>
+	</tr>
+	<tr> 
+		<td>...</td>
+	</tr>
+</table>
 
 <h2><b> RESULT </b></h2>
 
