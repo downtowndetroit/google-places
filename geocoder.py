@@ -23,7 +23,6 @@ input_table = str(data['input_table'])
 output_table = str(data['output_table'])
 reference_path = str(data['reference_path'])
 googleApiKey = str(data['googleApiKey'])
-city = str(data['city'])
 county = str(data['county'])
 state = str(data['state'])
 viewbox = str(data['viewbox'])
@@ -54,9 +53,9 @@ def OSM_geocode(address):
 
 
 def google_geocode(intersect):
-    global bound, city, county, state, googleApiKey
+    global bound, county, state, googleApiKey
     GoogleApiKey = googleApiKey
-    params = {'address': '{},{},{}'.format(intersect, city, state),
+    params = {'address': '{},{}'.format(intersect, state),
               'bounds': bound,
               'key': GoogleApiKey}
     url = 'https://maps.googleapis.com/maps/api/geocode/json'
