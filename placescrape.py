@@ -183,16 +183,16 @@ def main():
                  searchType=type,
                  apikey=apikey)
     output_excel = str(sys.argv[1])
-    print(output_excel)
     if (len(output_excel) <= 5):
         warnings.warn(
             'Output excel file path is failed to recognized, use "output.xlsx" instead.', Warning)
-        #df.to_excel(os.path.join(outFolder, "output.xlsx"))
-        writeExcel(df, os.path.join(outFolder, "output.xlsx"))
+        df.to_excel(os.path.join(outFolder, "output.xlsx"))
+        #writeExcel(df, os.path.join(outFolder, "output.xlsx"))
+        print('Sussessfully saved to ', os.path.join(outFolder, "output.xlsx"))
     else:
-        #df.to_excel(os.path.join(outFolder, output_excel))
-        writeExcel(df, os.path.join(outFolder, output_excel))
-
+        df.to_excel(os.path.join(outFolder, output_excel))
+        #writeExcel(df, os.path.join(outFolder, output_excel))
+        print('Sussessfully saved to ', os.path.join(outFolder, output_excel))
 
 if __name__ == "__main__":
     main()
