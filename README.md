@@ -18,7 +18,7 @@ cd google-places-scrapy
 
 Install required packages
 ```
-conda install pandas numpy requests
+conda install pandas numpy requests xlsxwriter
 ```
 
 ## Configeration
