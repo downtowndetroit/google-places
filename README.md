@@ -7,13 +7,13 @@ This script automatically scrape places data using [**Google Place API**](https:
 Clone repository
 
 ```
-git clone https://github.com/tianxie1995/google-places-scrapy.git
+git clone https://github.com/downtowndetroit/google-places.git
 ```
 
 Change dictionary
 
 ```
-cd google-places-scrapy
+cd google-places
 ```
 
 Install required packages
