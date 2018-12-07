@@ -17,14 +17,8 @@ cd google-places-scrapy
 ```
 
 Install required packages
-
 ```
-pip install requirements.txt
-```
-if it doesn't work, using
-```
-pip install pandas numpy 
-conda install requests itertools configparser
+conda install pandas numpy requests
 ```
 
 ## Configeration
