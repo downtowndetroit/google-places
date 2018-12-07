@@ -18,24 +18,20 @@ import requests
 import pandas as pd
 import itertools
 import time
-import configparser
+import config
 
-with open("config.ini") as f:
-    config = f.read()
-conf = configparser.ConfigParser()
-conf.read("config.ini")
-apikey = str(conf['confidential']['apikey'])
+apikey = config.apikey
 
-south = float(conf['bounding']['south'])
-west = float(conf['bounding']['west'])
-north = float(conf['bounding']['north'])
-east = float(conf['bounding']['east'])
+south = config.bounding['south']
+west = config.bounding['west']
+north = config.bounding['north']
+east = config.bounding['east']
 
-searchingRadius = int(conf['searchingParameter']['searchingRadius'])
+searchingRadius = config.searchingParameter['searchingRadius']
 
-type = str(conf['searchingParameter']['type'])
+type = config.searchingParameter['type']
 
-outFolder = str(conf['output']['outputFolder'])
+outFolder = config.outputFolder
 
 
 def scrape(response):
